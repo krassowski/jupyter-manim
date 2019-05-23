@@ -142,7 +142,10 @@ class ManimMagics(Magics):
 
             return video(relative_path, **video_settings)
         else:
-            warn('Could not find path in the manim output')
+            just_show_help = '-h' in user_args or '--help' in user_args
+
+            if not just_show_help:
+                warn('Could not find path in the manim output')
 
             # If we were silent, some errors could have been silenced too.
             if silent:
