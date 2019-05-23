@@ -63,7 +63,7 @@ You can disable this behaviour using `--verbose` flag
 
 #### Video player control options
 
- - `--no-control` - hides the controls
+ - `--no-controls` - hides the controls
  - `--no-autoplay` - disables the autoplay feature
  - `-r` or `--resolution` - control the height and width of the video player;
   this option is shared with manim and requires the resolution in following format:
