@@ -1,14 +1,18 @@
-from IPython.core.magic import Magics, magics_class, cell_magic
-from unittest.mock import patch
-from tempfile import NamedTemporaryFile
-import manimlib
-from IPython.display import HTML
+import os
 import sys
-from io import StringIO
 from contextlib import ExitStack, suppress, redirect_stdout, redirect_stderr
-from warnings import warn
-from IPython import get_ipython
+from io import StringIO
 from pathlib import Path
+from tempfile import NamedTemporaryFile
+from unittest.mock import patch
+from warnings import warn
+
+import manimlib
+from IPython import get_ipython
+from IPython.core.magic import Magics, magics_class, cell_magic
+from IPython.display import HTML
+
+__version__ = 0.11
 
 std_out = sys.stdout
 
@@ -103,9 +107,12 @@ class ManimMagics(Magics):
                 if line.startswith(self.path_line_start):
                     path = line[len(self.path_line_start):].strip()
 
-        with NamedTemporaryFile('w', suffix='.py') as f:
+        # Using a workaround for Windows permissions issue as in this questions:
+        # https://stackoverflow.com/q/15169101
+        f = NamedTemporaryFile('w', suffix='.py', delete=False)
+        try:
             f.write(cell)
-            f.flush()
+            f.close()
 
             args = ['manim', f.name, *user_args]
 
@@ -124,6 +131,8 @@ class ManimMagics(Magics):
                     enter(redirect_stderr(stderr))
 
                 manimlib.main()
+        finally:
+            os.remove(f.name)
 
         if path:
             path = Path(path)

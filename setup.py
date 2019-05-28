@@ -19,7 +19,7 @@ if __name__ == '__main__':
     setup(
         name='jupyter_manim',
         packages=find_packages(),
-        version='0.1',
+        version='0.11',
         license='MIT',
         description='Cell magic rendering displaying videos in Jupyter/IPython',
         long_description=get_long_description('README.md'),
