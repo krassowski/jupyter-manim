@@ -19,7 +19,7 @@ pip3 install jupyter-manim
 
 ### Usage
 
-Your arguments will be passed to manim, exactly as if these were command line options.
+To enable the manim magic please run `import jupyter_manim` first. Then, you can use the magic as if it was the manim command: your arguments will be passed to manim, exactly as if these were command line options.
 
 For example, to render scene defined with class `Shapes(Scene)` use
 
