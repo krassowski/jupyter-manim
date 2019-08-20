@@ -16,6 +16,21 @@ The code in the example above comes from the excellent [manim tutorial](https://
 ```sh
 pip3 install jupyter-manim
 ```
+### Installation in Anaconda:
+Starting point: there are two anaconda envs:
+base -> here is the jupyter notebook installed
+manim -> here is manim and your package installed, but not jupyter.
+Now follow this instruction:
+1. Open Terminal (base interpreter) and type `anaconda-navigator`
+2. In the home-tab go to "Applications on.." and switch to your manim env.
+3. Klick on "Install Jupyter notebook"
+![install](https://user-images.githubusercontent.com/44469195/63328616-be4bdc80-c330-11e9-8321-1f777940a474.png)
+4. Close the navigator, open the terminal and type `conda activate manim`
+5. type `install jupyter-manim`
+6. Launch the notebook with `jupyter notebook`. 
+7. First line in the notebook cell: `import jupyter_manim`
+
+
 
 ### Usage
 
