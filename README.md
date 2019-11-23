@@ -42,7 +42,7 @@ Thus, all the imports have to be contained in your cell.
 In future, an option to export the current namespace (or specific variables) will be added.
 It could be implemented by pickling the Python locals and globals and then pre-pending the cell with an un-pickling script (PRs welcome!).
 
-In the latest version of manimlib (not yet released) you will be able to import everything at once using:
+In the latest version of manimlib you can import everything at once using:
 
 ```python
 from manimlib.imports import *
@@ -68,3 +68,4 @@ You can disable this behaviour using `--verbose` flag
  - `-r` or `--resolution` - control the height and width of the video player;
   this option is shared with manim and requires the resolution in following format:
   `height,width`, e.g. `%%manim Shapes -r 200,1000`
+ - `--remote` send the video with a `data:` URL instead of a local path (useful for remote notebooks like Google Colab)
