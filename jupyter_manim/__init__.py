@@ -85,7 +85,6 @@ class ManimMagics(Magics):
                 settings[arg] = False
 
         resolution_index = (
-            user_args.index('-r') if '-r' in user_args else
             user_args.index('--resolution') if '--resolution' in user_args else
             None
         )
