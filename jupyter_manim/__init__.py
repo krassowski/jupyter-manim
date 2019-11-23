@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from unittest.mock import patch
 from warnings import warn
+import base64
 
 import manimlib
 from IPython import get_ipython
@@ -50,6 +51,7 @@ class ManimMagics(Magics):
         self.defaults = {
             'autoplay': True,
             'controls': True,
+            'remote': False,
             'silent': True,
             'width': 854,
             'height': 480
@@ -83,7 +85,6 @@ class ManimMagics(Magics):
                 settings[arg] = False
 
         resolution_index = (
-            user_args.index('-r') if '-r' in user_args else
             user_args.index('--resolution') if '--resolution' in user_args else
             None
         )
@@ -95,7 +96,19 @@ class ManimMagics(Magics):
                 settings['width'] = w
             except (IndexError, KeyError):
                 warn('Unable to retrieve dimensions from your resolution setting, falling back to the defaults')
-
+        
+        remote_index = (
+            user_args.index('-b') if '-b' in user_args else
+            user_args.index('--base64') if '--base64' in user_args else
+            None
+        )
+        if remote_index is not None:
+            settings['remote'] = True
+            if '-b' in user_args:
+                user_args.remove('-b')
+            if '--base64' in user_args:
+                user_args.remove('--base64')
+        
         silent = settings['silent']
 
         def catch_path_and_forward(lines):
@@ -148,8 +161,14 @@ class ManimMagics(Magics):
                 for k, v in settings.items()
                 if k in self.video_settings
             }
-
-            return video(relative_path, **video_settings)
+            # If in remote mode, we send with a data: url
+            if settings['remote']:
+                data = base64.b64encode(path.read_bytes()).decode()
+                data_url = "data:video/mp4;base64," + data
+                return video(data_url, **video_settings)
+            # otherwise a relative path is fine
+            else:
+                return video(relative_path, **video_settings)
         else:
             just_show_help = '-h' in user_args or '--help' in user_args
 
