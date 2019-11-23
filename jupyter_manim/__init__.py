@@ -98,8 +98,8 @@ class ManimMagics(Magics):
                 warn('Unable to retrieve dimensions from your resolution setting, falling back to the defaults')
         
         remote_index = (
-            user_args.index('-r') if '-r' in user_args else
-            user_args.index('--remote') if '--remote' in user_args else
+            user_args.index('-b') if '-b' in user_args else
+            user_args.index('--base64') if '--base64' in user_args else
             None
         )
         if remote_index is not None:
