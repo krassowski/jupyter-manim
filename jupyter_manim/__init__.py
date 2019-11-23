@@ -104,7 +104,10 @@ class ManimMagics(Magics):
         )
         if remote_index is not None:
             settings['remote'] = True
-            user_args.remove('--remote')
+            if '-b' in user_args:
+                user_args.remove('-b')
+            if '--base64' in user_args:
+                user_args.remove('--base64')
         
         silent = settings['silent']
 
