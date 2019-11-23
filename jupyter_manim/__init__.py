@@ -104,6 +104,7 @@ class ManimMagics(Magics):
         )
         if remote_index is not None:
             settings['remote'] = True
+            user_args.remove('--remote')
         
         silent = settings['silent']
 
