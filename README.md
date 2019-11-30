@@ -68,4 +68,4 @@ You can disable this behaviour using `--verbose` flag
  - `-r` or `--resolution` - control the height and width of the video player;
   this option is shared with manim and requires the resolution in following format:
   `height,width`, e.g. `%%manim Shapes -r 200,1000`
- - `--remote` send the video with a `data:` URL instead of a local path (useful for remote notebooks like Google Colab)
+ - `--base64` send the video with a `data:` URL instead of a local path (useful for remote notebooks like Google Colab)
