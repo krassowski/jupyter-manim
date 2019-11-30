@@ -122,13 +122,11 @@ class ManimMagics(Magics):
                 for name, obj in globals_dict.items()
                 if (not name.startswith('_')) and is_pickable(obj)
             }
-            print(to_pickle)
             pickle.dump(to_pickle, f)
             f.close()
             yield f.name
         except Exception as e:
-            # TODO make warn
-            print('Pickling failed', e)
+            warn('Pickling failed: ' + str(e))
             yield None
         finally:
             os.remove(f.name)
