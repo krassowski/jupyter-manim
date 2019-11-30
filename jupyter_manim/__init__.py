@@ -15,7 +15,7 @@ from IPython import get_ipython
 from IPython.core.magic import Magics, magics_class, cell_magic
 from IPython.display import HTML
 
-__version__ = 0.11
+__version__ = 1.0
 
 std_out = sys.stdout
 

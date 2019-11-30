@@ -37,7 +37,7 @@ class Shapes(Scene):
 ```
 
 
-Since version 0.2, the code is no longer required to be self-contained -
+Since version 1.0, the code is no longer required to be self-contained -
 `jupyter_manim` will attempt to export your variables (and imported objects) from the notebook into the manim script.
 
 Most variables can be easily exported, however there are limitations; in short [everything which can be pickled](https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled) can be exported. Additionally, variables whose names start with an underscore will be ommited.
