@@ -1,3 +1,4 @@
+import inspect
 import os
 import pickle
 import sys
@@ -43,6 +44,43 @@ class StringIOWithCallback(StringIO):
         self.callback(s)
 
 
+UNPICKLE_SCRIPT = """
+import pickle
+from warnings import warn
+try:
+    with open('{pickle_path}', 'rb') as f:
+        objects_from_notebook = pickle.load(f)
+except pickle.PickleError as e:
+    warn('Could not unpickle the global objects from the notebook', e)
+
+globals_dict = globals()
+
+for name, object in objects_from_notebook.items():
+    try:
+        if name in globals_dict:
+            warn('Import from notebook: ' + name + ' already in the globals(), skipping')
+        else:
+            globals_dict[name] = object
+    except Exception as e:
+        warn('Could save into a global variable', e)
+"""
+
+
+def is_pickable(obj):
+    try:
+        pickle.dumps(obj)
+        return True
+    except (pickle.PicklingError, TypeError, AttributeError):
+        return False
+
+
+def find_ipython_frame(frames):
+    for frame in inspect.stack():
+        if frame.filename.startswith('<ipython-input-'):
+            return frame
+    return None
+
+
 @magics_class
 class ManimMagics(Magics):
     path_line_start = 'File ready at '
@@ -56,7 +94,7 @@ class ManimMagics(Magics):
             'silent': True,
             'width': 854,
             'height': 480,
-            'globals': True
+            'export_variables': True
         }
 
     video_settings = {'width', 'height', 'controls', 'autoplay'}
@@ -72,7 +110,21 @@ class ManimMagics(Magics):
         f = NamedTemporaryFile('wb', suffix='.pickle', delete=False)
         try:
             # TODO: go over each of the variables, exclude dunders, test pickability
-            pickle.dump(f, globals())
+
+            frame = find_ipython_frame(inspect.stack())
+            if not frame:
+                raise Exception('Could not find IPython frame')
+
+            globals_dict = frame[0].f_globals
+
+            to_pickle = {
+                name: obj
+                for name, obj in globals_dict.items()
+                if (not name.startswith('_')) and is_pickable(obj)
+            }
+            print(to_pickle)
+            pickle.dump(to_pickle, f)
+            f.close()
             yield f.name
         except Exception as e:
             # TODO make warn
@@ -146,24 +198,13 @@ class ManimMagics(Magics):
 
                 enter = stack.enter_context
 
-                if settings['export_globals']:
+                if settings['export_variables']:
                     # TODO test this with pytest
                     pickle_path = enter(self.export_globals())
-                    cell = """
-                    import pickle
-                    from warnings import warn
-                    try:
-                        objects_from_notebook = pickle.load('{pickle_path}')
-                    except pickle.PickleError:
-                        warn('Could not unpickle the global objects from the notebook: ')
-                    try:
-                        globals_dict = globals()
-                        for name, object in objects_from_notebook.items():
-                            if name in globals_dict:
-                                warn('Import from notebook: ' + name + ' already in the globals(), skipping')
-                            else:
-                                globals_dict[name] = object
-                    """.format(pickle_path=pickle_path)
+
+                    if pickle_path:
+                        unpickle_script = UNPICKLE_SCRIPT.format(pickle_path=pickle_path)
+                        cell = unpickle_script + cell
 
                 f.write(cell)
                 f.close()
