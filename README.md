@@ -1,7 +1,6 @@
 # jupyter-manim
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://choosealicense.com/licenses/mit/)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krassowski/jupyter-manim/master)
-
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krassowski/jupyter-manim/master?filepath=Example.ipynb)
 
 Integrates [manim](https://github.com/3b1b/manim) (animation engine for explanatory math videos)
 with Jupyter displaying the resulting video when using `%%manim` cell magic to wrap a scene definition.
