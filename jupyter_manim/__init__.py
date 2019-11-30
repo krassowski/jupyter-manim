@@ -1,6 +1,7 @@
 import os
+import pickle
 import sys
-from contextlib import ExitStack, suppress, redirect_stdout, redirect_stderr
+from contextlib import ExitStack, suppress, redirect_stdout, redirect_stderr, contextmanager
 from io import StringIO
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -54,7 +55,8 @@ class ManimMagics(Magics):
             'remote': False,
             'silent': True,
             'width': 854,
-            'height': 480
+            'height': 480,
+            'globals': True
         }
 
     video_settings = {'width', 'height', 'controls', 'autoplay'}
@@ -63,6 +65,21 @@ class ManimMagics(Magics):
         'no-controls': 'controls',
         'no-autoplay': 'autoplay'
     }
+
+    @contextmanager
+    def export_globals(self):
+        """Save pickable globals to a temporary file and yield its location"""
+        f = NamedTemporaryFile('wb', suffix='.pickle', delete=False)
+        try:
+            # TODO: go over each of the variables, exclude dunders, test pickability
+            pickle.dump(f, globals())
+            yield f.name
+        except Exception as e:
+            # TODO make warn
+            print('Pickling failed', e)
+            yield None
+        finally:
+            os.remove(f.name)
 
     @cell_magic
     def manim(self, line, cell):
@@ -124,16 +141,36 @@ class ManimMagics(Magics):
         # https://stackoverflow.com/q/15169101
         f = NamedTemporaryFile('w', suffix='.py', delete=False)
         try:
-            f.write(cell)
-            f.close()
-
-            args = ['manim', f.name, *user_args]
-
-            stdout = StringIOWithCallback(catch_path_and_forward)
 
             with ExitStack() as stack:
 
                 enter = stack.enter_context
+
+                if settings['export_globals']:
+                    # TODO test this with pytest
+                    pickle_path = enter(self.export_globals())
+                    cell = """
+                    import pickle
+                    from warnings import warn
+                    try:
+                        objects_from_notebook = pickle.load('{pickle_path}')
+                    except pickle.PickleError:
+                        warn('Could not unpickle the global objects from the notebook: ')
+                    try:
+                        globals_dict = globals()
+                        for name, object in objects_from_notebook.items():
+                            if name in globals_dict:
+                                warn('Import from notebook: ' + name + ' already in the globals(), skipping')
+                            else:
+                                globals_dict[name] = object
+                    """.format(pickle_path=pickle_path)
+
+                f.write(cell)
+                f.close()
+
+                args = ['manim', f.name, *user_args]
+
+                stdout = StringIOWithCallback(catch_path_and_forward)
 
                 enter(patch.object(sys, 'argv', args))
                 enter(suppress(SystemExit))
