@@ -3,6 +3,8 @@ cache:
   timeout: 1800
   pip: true
 
+# https://docs.travis-ci.com/user/languages/python/
+
 jobs:
   include:
     - name: "Python 3.6 on Ubuntu"
@@ -19,6 +21,7 @@ jobs:
     - name: "Python 3.8 on Windows"
       os: windows
       language: shell
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
       before_install:
          - choco install python --version 3.8.0
          - choco install ffmpeg
