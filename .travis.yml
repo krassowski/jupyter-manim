@@ -27,6 +27,7 @@ jobs:
          - choco install ffmpeg
          # - choco install miktex.portable
          - choco install sox.portable
+         - python -m pip install --upgrade pip
 
 install:
   - pip3 install --upgrade pip
