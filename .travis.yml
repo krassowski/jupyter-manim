@@ -24,13 +24,13 @@ jobs:
       before_install:
          - choco install python --version 3.8.0
          - choco install ffmpeg
-         - choco install miktex
+         - choco install miktex.install
          - choco install sox.portable
 
 install:
-  - pip install wheel
-  - pip install -r requirements.txt
-  - pip install -r tests/requirements.txt
+  - pip install wheel --user
+  - pip install -r requirements.txt --user
+  - pip install -r tests/requirements.txt --user
   - python3 setup.py install
 
 script:
