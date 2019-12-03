@@ -22,7 +22,7 @@ jobs:
       before_install:
          - choco install python --version 3.8.0
          - choco install ffmpeg
-         - choco install miktex.install
+         - choco install miktex.portable
          - choco install sox.portable
 
 install:
