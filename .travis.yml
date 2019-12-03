@@ -27,11 +27,10 @@ jobs:
          - choco install ffmpeg
          # - choco install miktex.portable
          - choco install sox.portable
-         - py -3 -m ensurepip
 
 install:
-  - pip3 install --upgrade pip
-  - pip3 install wheel
+  - pip3 install --upgrade pip || python -m pip install --upgrade pip --user
+  - pip3 install wheel || pip3 install wheel --user
   - pip3 install -r requirements.txt || pip3 install -r requirements.txt --user
   - pip3 install -r tests/requirements.txt || pip3 install -r tests/requirements.txt --user
   - python3 setup.py install
