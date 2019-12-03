@@ -21,7 +21,7 @@ jobs:
     - name: "Python 3.7 on Windows"
       os: windows
       language: shell
-      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
       before_install:
          - choco install python --version 3.7.4
          - choco install ffmpeg
