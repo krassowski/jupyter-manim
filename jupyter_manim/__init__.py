@@ -6,6 +6,7 @@ from contextlib import ExitStack, suppress, redirect_stdout, redirect_stderr, co
 from io import StringIO
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from typing import List, Dict, Tuple
 from unittest.mock import patch
 from warnings import warn
 import base64
@@ -109,8 +110,6 @@ class ManimMagics(Magics):
         """Save pickable globals to a temporary file and yield its location"""
         f = NamedTemporaryFile('wb', suffix='.pickle', delete=False)
         try:
-            # TODO: go over each of the variables, exclude dunders, test pickability
-
             frame = find_ipython_frame(inspect.stack())
             if not frame:
                 raise Exception('Could not find IPython frame')
@@ -131,17 +130,9 @@ class ManimMagics(Magics):
         finally:
             os.remove(f.name)
 
-    @cell_magic
-    def manim(self, line, cell):
-        # execute the code - won't generate any video, however it will introduce
-        # the variables into the notebook's namespace (enabling autocompletion etc);
-        # this also allows users to get feedback on some code errors early on
-        get_ipython().ex(cell)
+    def parse_arguments(self, line) -> Tuple[Dict, List]:
 
         user_args = line.split(' ')
-
-        # path of the output video
-        path = None
 
         settings = self.defaults.copy()
 
@@ -152,6 +143,7 @@ class ManimMagics(Magics):
                 settings[arg] = False
 
         resolution_index = (
+            user_args.index('-r') if '-r' in user_args else
             user_args.index('--resolution') if '--resolution' in user_args else
             None
         )
@@ -163,7 +155,7 @@ class ManimMagics(Magics):
                 settings['width'] = w
             except (IndexError, KeyError):
                 warn('Unable to retrieve dimensions from your resolution setting, falling back to the defaults')
-        
+
         remote_index = (
             user_args.index('-b') if '-b' in user_args else
             user_args.index('--base64') if '--base64' in user_args else
@@ -175,7 +167,21 @@ class ManimMagics(Magics):
                 user_args.remove('-b')
             if '--base64' in user_args:
                 user_args.remove('--base64')
-        
+
+        return settings, user_args
+
+    @cell_magic
+    def manim(self, line, cell):
+        # execute the code - won't generate any video, however it will introduce
+        # the variables into the notebook's namespace (enabling autocompletion etc);
+        # this also allows users to get feedback on some code errors early on
+        get_ipython().ex(cell)
+
+        # path of the output video
+        path = None
+
+        settings, user_args = self.parse_arguments(line)
+
         silent = settings['silent']
 
         def catch_path_and_forward(lines):

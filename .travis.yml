@@ -1,0 +1,45 @@
+language: python
+cache:
+  timeout: 1800
+  pip: true
+
+# https://docs.travis-ci.com/user/languages/python/
+
+jobs:
+  include:
+    - name: "Python 3.6 on Ubuntu"
+      os: linux
+      python: 3.6
+      before_install:
+        -  sudo apt-get install -y ffmpeg
+    - name: "Python 3.7 on macOS 10.14"
+      os: osx
+      osx_image: xcode11.2
+      language: shell
+      before_install:
+        - brew install ffmpeg
+    - name: "Python 3.7 on Windows"
+      os: windows
+      language: shell
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      before_install:
+         - choco install python --version 3.7.4
+         - choco install ffmpeg
+         # - choco install miktex.portable
+         - choco install sox.portable
+         # https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycairo
+         # https://stackoverflow.com/a/48132109/6646912
+         - pip3 install https://download.lfd.uci.edu/pythonlibs/t7epjj8p/pycairo-1.18.2-cp37-cp37m-win_amd64.whl --user
+
+install:
+  - pip3 install --upgrade pip || python -m pip install --upgrade pip --user
+  - pip3 install wheel || pip3 install wheel --user
+  - pip3 install -r requirements.txt || pip3 install -r requirements.txt --user
+  - pip3 install -r tests/requirements.txt || pip3 install -r tests/requirements.txt --user
+  - python3 setup.py install || python setup.py install
+
+script:
+  - ipython -m pytest -- --cov=.
+
+after_success:
+  - codecov
