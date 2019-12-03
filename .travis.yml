@@ -1,0 +1,35 @@
+language: python
+cache:
+  timeout: 1800
+  pip: true
+
+jobs:
+  include:
+    - os: linux
+      python: 3.6
+      env: TOXENV=py36
+    - os: osx
+      python: 3.6
+      env: TOXENV=py36
+    - os: windows
+      python: 3.6
+      env: TOXENV=py36
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew update                       ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get -y install ffmpeg  ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install ffmpeg          ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install miktex          ; fi
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install sox.portable    ; fi
+
+install:
+  - pip install wheel
+  - pip install -r requirements.txt
+  - pip install -r tests/requirements.txt
+  - python setup.py install
+
+script:
+  - ipython -m pytest -- --cov=.
+
+after_success:
+  - codecov
