@@ -36,7 +36,7 @@ install:
   - pip3 install wheel || pip3 install wheel --user
   - pip3 install -r requirements.txt || pip3 install -r requirements.txt --user
   - pip3 install -r tests/requirements.txt || pip3 install -r tests/requirements.txt --user
-  - python3 setup.py install
+  - python3 setup.py install || python setup.py install
 
 script:
   - ipython -m pytest -- --cov=.
