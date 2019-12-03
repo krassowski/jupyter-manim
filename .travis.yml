@@ -28,7 +28,6 @@ jobs:
          # - choco install miktex.portable
          - choco install sox.portable
          - py -3 -m ensurepip
-         - python -m pip install --upgrade pip
 
 install:
   - pip3 install --upgrade pip
