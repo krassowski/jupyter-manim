@@ -1,4 +1,6 @@
 # jupyter-manim
+[![Build Status](https://travis-ci.org/krassowski/jupyter-manim.svg?branch=master)](https://travis-ci.org/krassowski/jupyter-manim)
+[![codecov](https://codecov.io/gh/krassowski/jupyter-manim/branch/master/graph/badge.svg)](https://codecov.io/gh/krassowski/jupyter-manim)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://choosealicense.com/licenses/mit/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krassowski/jupyter-manim/master?filepath=Example.ipynb)
 
@@ -70,4 +72,17 @@ from manimlib.imports import *
  - `-r` or `--resolution` - control the height and width of the video player;
   this option is shared with manim and requires the resolution in following format:
   `height,width`, e.g. `%%manim Shapes -r 200,1000`
- - `--base64` send the video with a `data:` URL instead of a local path (useful for remote notebooks like Google Colab)
+ - `--base64` send the video with a `data:` URL instead of a local path - useful for remote notebooks like Google Colab,
+ or to embed the video in notebook (note: the notebook size may increase rapidly)
+
+
+### Compatibility and testing
+
+This package is continuously tested with Python 3.7 on Ubuntu, Mac OS an Windows.
+
+Tests have to be run with ipython, as the magic relies on IPython instance being available:
+
+```bash
+python3 setup.py install
+ipython -m pytest -- --cov=.
+```
