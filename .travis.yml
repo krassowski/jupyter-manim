@@ -28,8 +28,8 @@ jobs:
 install:
   - pip3 install --upgrade pip
   - pip3 install wheel
-  - pip3 install -r requirements.txt --user
-  - pip3 install -r tests/requirements.txt --user
+  - pip3 install -r requirements.txt
+  - pip3 install -r tests/requirements.txt
   - python3 setup.py install
 
 script:
