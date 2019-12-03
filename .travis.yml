@@ -16,8 +16,6 @@ jobs:
       language: shell
       before_install:
         - brew install ffmpeg
-        - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-        - python3 get-pip.py
     - name: "Python 3.8 on Windows"
       os: windows
       language: shell
@@ -28,9 +26,10 @@ jobs:
          - choco install sox.portable
 
 install:
-  - pip install wheel --user
-  - pip install -r requirements.txt --user
-  - pip install -r tests/requirements.txt --user
+  - pip3 install --upgrade pip
+  - pip3 install wheel
+  - pip3 install -r requirements.txt --user
+  - pip3 install -r tests/requirements.txt --user
   - python3 setup.py install
 
 script:
