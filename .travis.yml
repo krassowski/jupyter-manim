@@ -26,8 +26,6 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:/c/tools/miniconda3/:/c/tools/miniconda3/Scripts:$PATH
       before_install:
          - choco install python --version 3.7.4
-         - choco install x264vfw
-         - choco install openshot
          - choco install ffmpeg
          # - choco install miktex.portable
          - choco install sox.portable
@@ -36,6 +34,8 @@ jobs:
          - pip3 install https://download.lfd.uci.edu/pythonlibs/t7epjj8p/pycairo-1.18.2-cp37-cp37m-win_amd64.whl --user
          # temporary workaround for https://github.com/3b1b/manim/pull/672
          - pip3 install pyreadline==2.1 --user
+  allow_failures:
+    - os: windows
 
 install:
   - pip3 install --upgrade pip || python -m pip install --upgrade pip --user

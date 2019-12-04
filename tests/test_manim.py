@@ -3,6 +3,7 @@ import pickle
 import re
 from typing import NamedTuple
 
+import pytest
 from papermill import execute_notebook
 
 from jupyter_manim import ManimMagics, find_ipython_frame
@@ -34,6 +35,7 @@ SHAPES_OUTPUT_REGEXP = r"""
 """
 
 
+@pytest.mark.manim_dependent
 def test_integration():
     output_notebook = execute_notebook(
         'Example.ipynb',
@@ -134,12 +136,14 @@ def test_help(capsys):
     assert not captured.err.strip()
 
 
+@pytest.mark.manim_dependent
 def test_cell_magic():
     magics_manager = ManimMagics()
     result = magics_manager.manim('Shapes', SHAPES_EXAMPLE)
     assert re.match(SHAPES_OUTPUT_REGEXP, result.data)
 
 
+@pytest.mark.manim_dependent
 def test_cell_base64():
     magics_manager = ManimMagics()
     result = magics_manager.manim('Shapes --base64 --low_quality', SHAPES_EXAMPLE)
