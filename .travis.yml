@@ -26,8 +26,9 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:/c/tools/miniconda3/:/c/tools/miniconda3/Scripts:$PATH
       before_install:
          - choco install python --version 3.7.4
-           #- choco install ffmpeg
-         - choco install imagemagick.app
+         - choco install x264vfw
+         - choco install openshot
+         - choco install ffmpeg
          # - choco install miktex.portable
          - choco install sox.portable
          # https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycairo
