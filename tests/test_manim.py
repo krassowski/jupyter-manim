@@ -43,6 +43,8 @@ def test_integration():
         assert cell['metadata']['papermill']['exception'] is False
 
     last_cell_outputs = output_notebook['cells'][-1]['outputs']
+    if len(last_cell_outputs) != 1:
+        print(last_cell_outputs)
     assert len(last_cell_outputs) == 1
     output_data = last_cell_outputs[0]['data']
     assert re.match(
