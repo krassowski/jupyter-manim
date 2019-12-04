@@ -26,9 +26,10 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
       before_install:
          - choco install python --version 3.7.4
-         - choco install miniconda3
+         - choco install miniconda3 --params="'/AddToPath:1'"
          # libx264 / x265 missing from newer builds
-         - conda install x264=='1!152.20180717' ffmpeg=4.0.2 -c conda-forge
+         -  conda config --add channels conda-forge 
+         - conda install x264 ffmpeg -c conda-forge
          # - choco install miktex.portable
          - choco install sox.portable
          # https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycairo
