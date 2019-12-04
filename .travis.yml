@@ -26,7 +26,8 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
       before_install:
          - choco install python --version 3.7.4
-         - choco install ffmpeg
+         # libx264 / x265 missing from newer builds
+         - choco install ffmpeg --version 3.3.1
          # - choco install miktex.portable
          - choco install sox.portable
          # https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycairo
