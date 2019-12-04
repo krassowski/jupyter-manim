@@ -128,6 +128,8 @@ class ManimMagics(Magics):
             warn('Pickling failed: ' + str(e))
             yield None
         finally:
+            if not f.closed:
+                f.close()
             os.remove(f.name)
 
     def parse_arguments(self, line) -> Tuple[Dict, List]:
