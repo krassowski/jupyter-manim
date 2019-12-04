@@ -19,6 +19,7 @@ jobs:
       before_install:
         - brew install ffmpeg
         - brew install cairo
+        - pip3 install pycairo --user
     - name: "Python 3.7 on Windows"
       os: windows
       language: shell
