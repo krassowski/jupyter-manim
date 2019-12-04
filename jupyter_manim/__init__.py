@@ -49,7 +49,7 @@ UNPICKLE_SCRIPT = """
 import pickle
 from warnings import warn
 try:
-    with open('{pickle_path}', 'rb') as f:
+    with open(r'{pickle_path}', 'rb') as f:
         objects_from_notebook = pickle.load(f)
 except pickle.PickleError as e:
     warn('Could not unpickle the global objects from the notebook', e)
@@ -76,7 +76,7 @@ def is_pickable(obj):
 
 
 def find_ipython_frame(frames):
-    for frame in inspect.stack():
+    for frame in frames:
         if frame.filename.startswith('<ipython-input-'):
             return frame
     return None
@@ -128,6 +128,8 @@ class ManimMagics(Magics):
             warn('Pickling failed: ' + str(e))
             yield None
         finally:
+            if not f.closed:
+                f.close()
             os.remove(f.name)
 
     def parse_arguments(self, line) -> Tuple[Dict, List]:
@@ -203,7 +205,6 @@ class ManimMagics(Magics):
                 enter = stack.enter_context
 
                 if settings['export_variables']:
-                    # TODO test this with pytest
                     pickle_path = enter(self.export_globals())
 
                     if pickle_path:
