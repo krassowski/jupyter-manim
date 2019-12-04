@@ -18,6 +18,7 @@ jobs:
       language: shell
       before_install:
         - brew install ffmpeg
+        - brew install cairo
     - name: "Python 3.7 on Windows"
       os: windows
       language: shell
