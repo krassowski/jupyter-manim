@@ -49,7 +49,7 @@ UNPICKLE_SCRIPT = """
 import pickle
 from warnings import warn
 try:
-    with open('{pickle_path}', 'rb') as f:
+    with open(r'{pickle_path}', 'rb') as f:
         objects_from_notebook = pickle.load(f)
 except pickle.PickleError as e:
     warn('Could not unpickle the global objects from the notebook', e)
