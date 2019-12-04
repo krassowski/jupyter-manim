@@ -43,7 +43,7 @@ install:
   - python3 setup.py install || python setup.py install
 
 script:
-  - python3 ipytest.py --cov=. -v || python ipytest.py --cov=. -v
+  - python3 ipytest.py --cov=jupyter_manim -v || python ipytest.py --cov=jupyter_manim -v
 
 after_success:
   - codecov
