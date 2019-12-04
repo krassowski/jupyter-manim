@@ -205,7 +205,6 @@ class ManimMagics(Magics):
                 enter = stack.enter_context
 
                 if settings['export_variables']:
-                    # TODO test this with pytest
                     pickle_path = enter(self.export_globals())
 
                     if pickle_path:
