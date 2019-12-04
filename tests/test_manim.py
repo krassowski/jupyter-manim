@@ -1,11 +1,95 @@
+import inspect
+import pickle
 import re
+from typing import NamedTuple
 
-from jupyter_manim import ManimMagics
+from papermill import execute_notebook
+
+from jupyter_manim import ManimMagics, find_ipython_frame
+import jupyter_manim
 
 
-def test_pickle():
-    # TODO
-    pass
+SHAPES_EXAMPLE = """
+from manimlib.scene.scene import Scene
+from manimlib.mobject.geometry import Circle
+from manimlib.animation.creation import ShowCreation
+
+class Shapes(Scene):
+
+    def construct(self):
+        circle = Circle()
+        self.play(ShowCreation(circle))
+"""
+
+
+SHAPES_OUTPUT_REGEXP = r"""
+    <video
+      width="854"
+      height="480"
+      autoplay="autoplay"
+      controls
+    >
+        <source src="videos/(.*?)/1440p60/Shapes\.mp4" type="video/mp4">
+    </video>
+"""
+
+
+def test_integration():
+    output_notebook = execute_notebook(
+        'Example.ipynb',
+        'Example_result.ipynb',
+    )
+    for cell in output_notebook['cells']:
+        assert cell['metadata']['papermill']['exception'] is False
+
+    last_cell_outputs = output_notebook['cells'][-1]['outputs']
+    assert len(last_cell_outputs) == 1
+    output_data = last_cell_outputs[0]['data']
+    assert re.match(
+        # the example notebook uses low quality option for faster rendering
+        SHAPES_OUTPUT_REGEXP.replace('/1440p60/', '/480p15/'),
+        output_data['text/html']
+    )
+
+
+class MockFrameInfo(NamedTuple):
+    filename: str
+
+
+def test_find_ipython_frame():
+    ipython_frame = MockFrameInfo(filename='<ipython-input-918-9c9a2cba73bf>')
+    parent_frame = MockFrameInfo(filename='/venv/lib/python3.7/site-packages/IPython/core/interactiveshell.py')
+
+    frame = find_ipython_frame([ipython_frame, parent_frame])
+    assert frame is ipython_frame
+
+    frame = find_ipython_frame([parent_frame])
+    assert frame is None
+
+
+PICKLE_A = 'this should be pickled '
+_PICKLE_B = 'this should not'
+
+
+def test_pickle(monkeypatch):
+    magics_manager = ManimMagics()
+
+    def mock_frame(stack):
+        """Return the frame of test_pickle"""
+        return inspect.stack()[0]
+
+    monkeypatch.setattr(jupyter_manim, 'find_ipython_frame', mock_frame)
+
+    with magics_manager.export_globals() as pickled_file:
+        assert type(pickled_file) is str
+        assert pickled_file.endswith('.pickle')
+
+        with open(pickled_file, 'rb') as f:
+            unpickled = pickle.load(f)
+
+        assert 'PICKLE_A' in unpickled
+        assert unpickled['PICKLE_A'] == PICKLE_A
+        assert '_PICKLE_B' not in unpickled
 
 
 def test_arguments_resolution():
@@ -48,37 +132,15 @@ def test_help(capsys):
     assert not captured.err.strip()
 
 
-SHAPES_EXAMPLE = """
-from manimlib.scene.scene import Scene
-from manimlib.mobject.geometry import Circle
-from manimlib.animation.creation import ShowCreation
-
-class Shapes(Scene):
-
-    def construct(self):
-        circle = Circle()
-        self.play(ShowCreation(circle))
-"""
-
-
 def test_cell_magic():
     magics_manager = ManimMagics()
     result = magics_manager.manim('Shapes', SHAPES_EXAMPLE)
-    assert re.match(r"""
-    <video
-      width="854"
-      height="480"
-      autoplay="autoplay"
-      controls
-    >
-        <source src="videos/(.*?)/1440p60/Shapes\.mp4" type="video/mp4">
-    </video>
-    """, result.data)
+    assert re.match(SHAPES_OUTPUT_REGEXP, result.data)
 
 
 def test_cell_base64():
     magics_manager = ManimMagics()
-    result = magics_manager.manim('Shapes --base64', SHAPES_EXAMPLE)
+    result = magics_manager.manim('Shapes --base64 --low_quality', SHAPES_EXAMPLE)
     assert re.match(r"""
     <video
       width="854"

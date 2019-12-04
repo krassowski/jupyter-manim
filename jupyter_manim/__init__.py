@@ -76,7 +76,7 @@ def is_pickable(obj):
 
 
 def find_ipython_frame(frames):
-    for frame in inspect.stack():
+    for frame in frames:
         if frame.filename.startswith('<ipython-input-'):
             return frame
     return None
