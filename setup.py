@@ -34,6 +34,7 @@ if __name__ == '__main__':
             'Framework :: Jupyter',
             'Operating System :: Microsoft :: Windows',
             'Operating System :: POSIX :: Linux',
+            'Operating System :: MacOS',
             'Topic :: Utilities',
             'Topic :: Software Development :: User Interfaces',
             'Topic :: Software Development :: Libraries :: Python Modules',
