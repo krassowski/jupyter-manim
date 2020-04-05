@@ -157,3 +157,36 @@ def test_cell_base64():
         <source src="data:video/mp4;base64,(.*?)" type="video/mp4">
     </video>
     """, result.data)
+
+
+@pytest.mark.manim_dependent
+def test_cell_base64_gif():
+    magics_manager = ManimMagics()
+    result = magics_manager.manim(
+        'Shapes --base64 --low_quality --save_as_gif',
+        SHAPES_EXAMPLE
+    )
+    assert re.match(r"""
+    <img
+      width="854"
+      height="480"
+      src="data:image/gif;base64,(.*?)"
+    >
+    """, result.data)
+
+
+@pytest.mark.manim_dependent
+def test_cell_gif():
+    magics_manager = ManimMagics()
+    result = magics_manager.manim(
+        'Shapes --low_quality --save_as_gif',
+        SHAPES_EXAMPLE
+    )
+
+    assert re.match(r"""
+    <img
+      width="854"
+      height="480"
+      src="(.*?)/Shapes\.gif"
+    >
+    """, result.data)

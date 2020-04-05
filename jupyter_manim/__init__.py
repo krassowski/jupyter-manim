@@ -34,6 +34,16 @@ def video(path, width=854, height=480, controls=True, autoplay=True):
     """)
 
 
+def gif(path, width=854, height=480, **kwargs):
+    return HTML(f"""
+    <img
+      width="{width}"
+      height="{height}"
+      src="{path}"
+    >
+    """)
+
+
 class StringIOWithCallback(StringIO):
 
     def __init__(self, callback, **kwargs):
@@ -95,7 +105,8 @@ class ManimMagics(Magics):
             'silent': True,
             'width': 854,
             'height': 480,
-            'export_variables': True
+            'export_variables': True,
+            'is_gif': False
         }
 
     video_settings = {'width', 'height', 'controls', 'autoplay'}
@@ -158,17 +169,16 @@ class ManimMagics(Magics):
             except (IndexError, KeyError):
                 warn('Unable to retrieve dimensions from your resolution setting, falling back to the defaults')
 
-        remote_index = (
-            user_args.index('-b') if '-b' in user_args else
-            user_args.index('--base64') if '--base64' in user_args else
-            None
-        )
-        if remote_index is not None:
+        is_remote = '-b' in user_args or '--base64' in user_args
+
+        if is_remote:
             settings['remote'] = True
             if '-b' in user_args:
                 user_args.remove('-b')
             if '--base64' in user_args:
                 user_args.remove('--base64')
+
+        settings['is_gif'] = '-i' in user_args or '--save_as_gif' in user_args
 
         return settings, user_args
 
@@ -244,14 +254,17 @@ class ManimMagics(Magics):
                 for k, v in settings.items()
                 if k in self.video_settings
             }
-            # If in remote mode, we send with a data: url
+
+            display_method = gif if settings['is_gif'] else video
+            file_type = 'image/gif' if settings['is_gif'] else 'video/mp4'
+
             if settings['remote']:
                 data = base64.b64encode(path.read_bytes()).decode()
-                data_url = "data:video/mp4;base64," + data
-                return video(data_url, **video_settings)
-            # otherwise a relative path is fine
+                to_display = 'data:' + file_type + ';base64,' + data
             else:
-                return video(relative_path, **video_settings)
+                to_display = relative_path
+
+            return display_method(to_display, **video_settings)
         else:
             just_show_help = '-h' in user_args or '--help' in user_args
 
