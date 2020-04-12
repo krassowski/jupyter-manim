@@ -31,7 +31,7 @@ jobs:
          - choco install sox.portable
          # https://www.lfd.uci.edu/~gohlke/pythonlibs/#pycairo
          # https://stackoverflow.com/a/48132109/6646912
-         - pip3 install https://download.lfd.uci.edu/pythonlibs/t7epjj8p/pycairo-1.18.2-cp37-cp37m-win_amd64.whl --user
+         - pip3 install https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/pycairo-1.19.1-cp37-cp37m-win_amd64.whl --user
          # temporary workaround for https://github.com/3b1b/manim/pull/672
          - pip3 install pyreadline==2.1 --user
   allow_failures:
