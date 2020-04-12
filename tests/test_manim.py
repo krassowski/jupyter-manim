@@ -96,6 +96,18 @@ def test_pickle(monkeypatch):
         assert '_PICKLE_B' not in unpickled
 
 
+def test_imports(monkeypatch):
+    magics_manager = ManimMagics()
+
+    def mock_frame(stack):
+        """Return the frame of test_pickle"""
+        return inspect.stack()[0]
+
+    monkeypatch.setattr(jupyter_manim, 'find_ipython_frame', mock_frame)
+    imports = magics_manager.extract_imports()
+    assert 'import pickle' in imports
+
+
 def test_arguments_resolution():
     magics_manager = ManimMagics()
     settings, user_args = magics_manager.parse_arguments('-r 100,200')

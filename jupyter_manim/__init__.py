@@ -6,6 +6,7 @@ from contextlib import ExitStack, suppress, redirect_stdout, redirect_stderr, co
 from io import StringIO
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from types import ModuleType
 from typing import List, Dict, Tuple
 from unittest.mock import patch
 from warnings import warn
@@ -143,6 +144,25 @@ class ManimMagics(Magics):
                 f.close()
             os.remove(f.name)
 
+    def extract_imports(self):
+        frame = find_ipython_frame(inspect.stack())
+        if not frame:
+            raise Exception('Could not find IPython frame')
+
+        globals_dict = frame[0].f_globals
+
+        modules = {
+            (
+                f'import {obj.__name__} as {name}'
+                if name != obj.__name__ else
+                f'import {name}'
+            )
+            for name, obj in globals_dict.items()
+            if (not name.startswith('_')) and isinstance(obj, ModuleType)
+            if name.isidentifier() and name != 'jupyter_manim'
+        }
+        return '\n'.join(modules)
+
     def parse_arguments(self, line) -> Tuple[Dict, List]:
 
         user_args = line.split(' ')
@@ -220,6 +240,11 @@ class ManimMagics(Magics):
                     if pickle_path:
                         unpickle_script = UNPICKLE_SCRIPT.format(pickle_path=pickle_path)
                         cell = unpickle_script + cell
+
+                    try:
+                        cell = self.extract_imports() + '\n' + cell
+                    except Exception as e:
+                        warn('Assembling imports failed: ' + str(e))
 
                 f.write(cell)
                 f.close()
