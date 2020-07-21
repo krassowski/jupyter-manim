@@ -22,13 +22,16 @@ __version__ = 1.1
 std_out = sys.stdout
 
 
-def video(path, width=854, height=480, controls=True, autoplay=True):
+def video(path,
+          width=854, height=480,
+          controls=True, autoplay=True, loop=True):
     return HTML(f"""
     <video
       width="{width}"
       height="{height}"
       autoplay="{'autoplay' if autoplay else ''}"
       {'controls' if controls else ''}
+      {'loop' if loop else ''}
     >
         <source src="{path}" type="video/mp4">
     </video>
@@ -102,6 +105,7 @@ class ManimMagics(Magics):
         self.defaults = {
             'autoplay': True,
             'controls': True,
+            'loop': True,
             'remote': False,
             'silent': True,
             'width': 854,
@@ -110,11 +114,12 @@ class ManimMagics(Magics):
             'is_gif': False
         }
 
-    video_settings = {'width', 'height', 'controls', 'autoplay'}
+    video_settings = {'width', 'height', 'controls', 'autoplay', 'loop'}
     magic_off_switches = {
         'verbose': 'silent',
         'no-controls': 'controls',
-        'no-autoplay': 'autoplay'
+        'no-autoplay': 'autoplay',
+        'no-loop': 'loop'
     }
 
     @contextmanager
