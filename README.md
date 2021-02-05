@@ -5,7 +5,7 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/krassowski/jupyter-manim/master?filepath=Example.ipynb)
 [![Colab](https://camo.githubusercontent.com/52feade06f2fecbf006889a904d221e6a730c194/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)](https://colab.research.google.com/gist/cjds/825d9acc80cb0b92bb877bbe2f468d70/example-jupyter-manim.ipynb)
 
-Integrates [manim](https://github.com/3b1b/manim) (animation engine for explanatory math videos)
+Integrates 3b1b's [manim](https://github.com/3b1b/manim) (animation engine for explanatory math videos)
 with Jupyter displaying the resulting video when using `%%manim` cell magic to wrap a scene definition.
 
 ### Quick preview
@@ -21,6 +21,8 @@ Run a live demo in your browser [by clicking here](https://mybinder.org/v2/gh/kr
 ```sh
 pip3 install jupyter-manim
 ```
+
+Note: you do not need to install this extension when using the Manim Community edition as it already [supports](https://github.com/ManimCommunity/manim/pull/943) the `%%manim` magic.
 
 ### Usage
 
