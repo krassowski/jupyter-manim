@@ -29,11 +29,11 @@ def video(path,
     <video
       width="{width}"
       height="{height}"
+      src="{path}"
       autoplay="{'autoplay' if autoplay else ''}"
       {'controls' if controls else ''}
       {'loop' if loop else ''}
     >
-        <source src="{path}" type="video/mp4">
     </video>
     """)
 
