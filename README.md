@@ -8,7 +8,7 @@
 Integrates 3b1b's [ManimCairo](https://github.com/3b1b/manim) (cairo-backend branch)
 with Jupyter displaying the resulting video when using `%%manim` cell magic to wrap a scene definition.
 
-> WARNING: This library only works for ManimCairo (the cairo-backend branch in 3b1b's version). It does not work for ManimCE (which already has Jupyter support by default)
+**WARNING**: This library only works for ManimCairo (the cairo-backend branch in 3b1b's version). It does not work for ManimCE (which already has Jupyter support by default)
 or ManimGL (which does not support Jupyter at all, as of time of writing).
 
 ### Quick preview
