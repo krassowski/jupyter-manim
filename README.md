@@ -25,8 +25,6 @@ Run a live demo in your browser [by clicking here](https://mybinder.org/v2/gh/kr
 pip3 install jupyter-manim
 ```
 
-Note: you do not need to install this extension when using the Manim Community edition as it already [supports](https://github.com/ManimCommunity/manim/pull/943) the `%%manim` magic.
-
 ### Usage
 
 To enable the manim magic please run `import jupyter_manim` first. Then, you can use the magic as if it was the manim command: your arguments will be passed to manim, exactly as if these were command line options.
